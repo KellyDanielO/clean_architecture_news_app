@@ -1,4 +1,4 @@
-import 'package:cached_network_image/cached_network_image.dart';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -40,15 +40,23 @@ class ArticleCard extends StatelessWidget {
               ),
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(15),
-                child: CachedNetworkImage(
-                  imageUrl: urlToImage,
+                child: Image.network(
+                  urlToImage,
+                  loadingBuilder: (context, child, loadingProgress) {
+                    if (loadingProgress == null) {
+                      return child;
+                    }
+                    return const CupertinoActivityIndicator();
+                  },
                   fit: BoxFit.cover,
-                  progressIndicatorBuilder: (context, url, downloadProgress) =>
-                      const CupertinoActivityIndicator(),
-                  errorWidget: (context, url, error) => const Icon(
-                    Icons.error_outline,
-                    color: Colors.red,
-                  ),
+                  errorBuilder: (context, error, stackTrace) {
+                    return const Center(
+                      child: Icon(
+                        Icons.error_outline,
+                        color: Colors.red,
+                      ),
+                    );
+                  },
                 ),
               ),
             ),
